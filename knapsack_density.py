@@ -41,7 +41,8 @@ def main():
     max_cost = float(sys.argv[2])
 
     # Breaks down data file into value and cost vectors
-    [value, cost] = dato.xy_data(dato.read_dat(file_name), 1, 1)
+    indices = [1, 2]
+    [value, cost, extra] = dato.slice_data(dato.read_dat(file_name), indices)
 
     # Computes packing list with most value dense items
     [packing_list, total_value, total_cost] = optimize_knapsack(value, cost, max_cost)

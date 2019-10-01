@@ -62,7 +62,7 @@ def main():
 
     # Breaks down data file into x,y matrices
     indices = [num_in, num_in + num_out]
-    [x_data, y_data] = dato.slice_data(dato.read_dat(file_name), indices)
+    [x_data, y_data, extra] = dato.slice_data(dato.read_dat(file_name), indices)
 
     # Constructs model terms from raw inputs
     x_fcn = create_x(x_data)
