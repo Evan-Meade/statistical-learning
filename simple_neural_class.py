@@ -1,5 +1,6 @@
 '''
 simple_neural_class.py
+Evan Meade, 2019
 
 Basic classification neural network built from scratch.
 
