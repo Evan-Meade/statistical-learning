@@ -48,6 +48,3 @@ def forward_prop(X, parameters):
         "A2": A2
     }
     return A2, cache
-
-def calculate_cost(A2, Y):
-    pass
