@@ -21,10 +21,6 @@ Then, supervised learning with a refinement algorithm known as backpropogation
 is used to hone the model parameters to fit the training data. Predictions
 can be made simply by feeding in a new input vector.
 
-NOTE: The model appears to perform poorly when the random function is not
-seeded to 2. The reason for this is unclear since it trains for every case
-many times.
-
 Execution Format:
 python simple_neural_class.py
 
@@ -257,10 +253,6 @@ def predict(X, parameters):
     # Returns prediction bit
     return y_predict
 
-
-# Initializes seed of NumPy random function
-# NOTE: Network shows poor performance if not seeded to 2
-np.random.seed(2)
 
 # Training data definition
 X = np.array([[0, 0, 1, 1], [0, 1, 0, 1]])
