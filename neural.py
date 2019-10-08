@@ -20,8 +20,8 @@ class model(object):
         params = []
 
         for i in range(1, len(nodes)):
-            W = np.random.randn(nodes[i], nodes[i-1])
-            b = np.zeros((nodes[i], 1))
+            W = np.matrix(np.random.randn(nodes[i], nodes[i-1]))
+            b = np.matrix(np.zeros((nodes[i], 1)))
             params.append([W, b])
 
         self.params = params
@@ -51,11 +51,13 @@ class model(object):
     def forward_prop(self, X):
         params = self.params
         cache = []
-        V = X
+        V = np.matrix(X).T
 
         for i in range(0, len(params)):
+            #print(V)
             cache.append(V)
-            V = self.sigmoid(params[i][0] * V + params[i][1])
+            #V = self.sigmoid(params[i][0] * V + params[i][1])
+            V = self.sigmoid(np.dot(params[i][0], V) + params[i][1])
 
         return V, cache
 
@@ -64,12 +66,14 @@ class model(object):
 
     def backward_prop(self, cache, Y):
         params = self.params
+        Y = np.matrix(Y).T
         delta = []
 
         delta.append(np.multiply(cache[-1] - Y, self.sigmoid_prime(cache[-1])))
 
         for i in range(len(cache) - 2, -1, -1):
             delta.insert(0, np.multiply(params[i][0].T * delta[0], self.sigmoid_prime(cache[i])))
+            pass
 
         return delta
 
@@ -77,7 +81,7 @@ class model(object):
         params = self.params
 
         for i in range(0, len(delta)):
-            params[i][0] = params[i][0] - rate * (cache[i] * delta[i].T)
+            params[i][0] = params[i][0] - rate * np.dot(cache[i], delta[i].T)
             params[i][1] = params[i][1] - rate * delta[i]
 
     def predict(self, X):
@@ -95,3 +99,9 @@ test.train(X, Y, 1000, .3)
 print(test.params)
 x_test = [1, 1]
 print(test.predict(x_test))
+
+# test = model([2, 2, 1])
+# print(test.params)
+# x = [1, 0]
+# a, cache = test.forward_prop(x)
+# print(a)
