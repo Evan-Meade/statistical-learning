@@ -39,9 +39,14 @@ class model(object):
         return z
 
     def train(self, X, Y, iters, rate):
+        n = len(X)
         for i in range(0, iters):
-            A, cache = self.forward_prop(X)
-            self.backward_prop(cache, Y, rate)
+            delta = []
+            for j in range(0, n):
+                A, cache = self.forward_prop(X[j])
+                delta.append(self.backward_prop(cache, Y[j]))
+            delta = np.sum(delta, axis=0) / n
+            self.update_parameters(cache, delta, rate)
 
     def forward_prop(self, X):
         params = self.params
@@ -49,29 +54,44 @@ class model(object):
         V = X
 
         for i in range(0, len(params)):
-            V = self.sigmoid(params[i][0] * V + params[i][1])
             cache.append(V)
+            V = self.sigmoid(params[i][0] * V + params[i][1])
 
         return V, cache
 
     def cost(A, Y):
         pass
 
-    def backward_prop(self, cache, Y, rate):
+    def backward_prop(self, cache, Y):
         params = self.params
-        n = len(Y)
         delta = []
 
-        delta.append(np.multiply(cache[-1] - Y, sigmoid_prime(cache[-1])))
+        delta.append(np.multiply(cache[-1] - Y, self.sigmoid_prime(cache[-1])))
 
         for i in range(len(cache) - 2, -1, -1):
-            delta.insert(0, np.multiply(params[i][0].T * delta[0], sigmoid_prime(cache[i])))
+            delta.insert(0, np.multiply(params[i][0].T * delta[0], self.sigmoid_prime(cache[i])))
+
+        return delta
+
+    def update_parameters(self, cache, delta, rate):
+        params = self.params
 
         for i in range(0, len(delta)):
-            # params[i][0] = TO-DO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            params[i][0] = params[i][0] - rate * (cache[i] * delta[i].T)
             params[i][1] = params[i][1] - rate * delta[i]
 
-        self.params = params
-
     def predict(self, X):
-        pass
+        yhat, cache = self.forward_prop(X)
+        print(yhat)   # Appears to be returning a 2x2 array, dimension error?
+        for i in range(0, len(yhat)):
+            yhat[i] = round(yhat[i])
+        return yhat
+
+test = model([2, 2, 1])
+print(test.params)
+X = [[0, 0], [0, 1], [1, 0], [1, 1]]
+Y = [[0], [1], [1], [0]]
+test.train(X, Y, 1000, .3)
+print(test.params)
+x_test = [1, 1]
+print(test.predict(x_test))
